@@ -12,9 +12,11 @@
     "dotenv": "^16.6.1",
     "express": "^4.22.2",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.24.1",
-    "nodemon": "^3.1.4"
+    "mongoose": "^8.24.1"
   },
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
 }
