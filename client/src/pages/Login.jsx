@@ -1,67 +1,82 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { loginUser } from "../services/authService";
+import { setToken } from "../utils/token";
+import { validateLogin } from "../utils/validate";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    const validationError = validateLogin({ email, password });
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await loginUser({ email, password });
+      setToken(res.data.token);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
       <Navbar />
 
-      <div
-        style={{
-          width: "350px",
-          margin: "50px auto",
-          padding: "30px",
-          border: "1px solid gray",
-          borderRadius: "10px",
-          backgroundColor: "#242424",
-        }}
-      >
-        <h1 style={{ textAlign: "center" }}>Login</h1>
+      <div className="page-center">
+        <form className="form-card" onSubmit={handleLogin}>
+          <h1>Login</h1>
 
-        <input
-          type="email"
-          placeholder="Enter Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "15px",
-            boxSizing: "border-box",
-          }}
-        />
+          {error && <div className="alert alert-error">{error}</div>}
 
-        <input
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "20px",
-            boxSizing: "border-box",
-          }}
-        />
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              className="form-input"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <button
-          onClick={handleLogin}
-          style={{
-            width: "100%",
-            padding: "10px",
-            cursor: "pointer",
-          }}
-        >
-          Login
-        </button>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              className="form-input"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <button type="submit" className="btn btn-full" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+          <p style={{ marginTop: "16px", textAlign: "center", fontSize: "14px" }}>
+            No account? <Link to="/register">Register here</Link>
+          </p>
+        </form>
       </div>
     </>
   );

@@ -9,16 +9,11 @@ const {
   rejectRequest,
 } = require("../controllers/requestController");
 
-// Send Request
-router.post("/send", sendRequest);
+const authMiddleware = require("../middleware/authMiddleware");
 
-// View Requests
-router.get("/", getRequests);
-
-// Accept Request
-router.put("/:id/accept", acceptRequest);
-
-// Reject Request
-router.put("/:id/reject", rejectRequest);
+router.post("/send", authMiddleware, sendRequest);
+router.get("/", authMiddleware, getRequests);
+router.put("/:id/accept", authMiddleware, acceptRequest);
+router.put("/:id/reject", authMiddleware, rejectRequest);
 
 module.exports = router;

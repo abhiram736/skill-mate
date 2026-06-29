@@ -1,20 +1,15 @@
 const Request = require("../models/Request");
 
-// Send Request
 exports.sendRequest = async (req, res) => {
   try {
-    const { sender, receiver, skillOffered, skillRequested } = req.body;
+    const { receiver, skillOffered, skillRequested } = req.body;
+    const sender = req.user.id;
 
-if (
-  !sender ||
-  !receiver ||
-  !skillOffered ||
-  !skillRequested
-) {
-  return res.status(400).json({
-    message: "All fields are required",
-  });
-}
+    if (!receiver || !skillOffered || !skillRequested) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
 
     if (sender === receiver) {
       return res.status(400).json({
@@ -35,11 +30,11 @@ if (
     }
 
     const request = await Request.create({
-  sender,
-  receiver,
-  skillOffered,
-  skillRequested,
-});
+      sender,
+      receiver,
+      skillOffered,
+      skillRequested,
+    });
 
     res.status(201).json({
       success: true,
@@ -54,10 +49,13 @@ if (
   }
 };
 
-// Get All Requests
 exports.getRequests = async (req, res) => {
   try {
-    const requests = await Request.find()
+    const userId = req.user.id;
+
+    const requests = await Request.find({
+      $or: [{ sender: userId }, { receiver: userId }],
+    })
       .populate("sender", "name email")
       .populate("receiver", "name email");
 
@@ -74,7 +72,6 @@ exports.getRequests = async (req, res) => {
   }
 };
 
-// Accept Request
 exports.acceptRequest = async (req, res) => {
   try {
     const request = await Request.findById(req.params.id);
@@ -85,8 +82,13 @@ exports.acceptRequest = async (req, res) => {
       });
     }
 
-    request.status = "Accepted";
+    if (request.receiver.toString() !== req.user.id) {
+      return res.status(403).json({
+        message: "Not authorized to accept this request",
+      });
+    }
 
+    request.status = "Accepted";
     await request.save();
 
     res.status(200).json({
@@ -102,7 +104,6 @@ exports.acceptRequest = async (req, res) => {
   }
 };
 
-// Reject Request
 exports.rejectRequest = async (req, res) => {
   try {
     const request = await Request.findById(req.params.id);
@@ -113,8 +114,13 @@ exports.rejectRequest = async (req, res) => {
       });
     }
 
-    request.status = "Rejected";
+    if (request.receiver.toString() !== req.user.id) {
+      return res.status(403).json({
+        message: "Not authorized to reject this request",
+      });
+    }
 
+    request.status = "Rejected";
     await request.save();
 
     res.status(200).json({
