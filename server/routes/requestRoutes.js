@@ -1,17 +1,24 @@
 const express = require("express");
+
 const router = express.Router();
-const auth = require("../middleware/authMiddleware");
+
 const {
   sendRequest,
-  getReceivedRequests,
-  getSentRequests,
-  updateRequestStatus,
+  getRequests,
+  acceptRequest,
+  rejectRequest,
 } = require("../controllers/requestController");
 
-// All routes are protected
-router.post("/", auth, sendRequest);
-router.get("/received", auth, getReceivedRequests);
-router.get("/sent", auth, getSentRequests);
-router.put("/:id", auth, updateRequestStatus);
+// Send Request
+router.post("/send", sendRequest);
+
+// View Requests
+router.get("/", getRequests);
+
+// Accept Request
+router.put("/:id/accept", acceptRequest);
+
+// Reject Request
+router.put("/:id/reject", rejectRequest);
 
 module.exports = router;

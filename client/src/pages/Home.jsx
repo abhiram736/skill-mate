@@ -1,13 +1,19 @@
-import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
     <div>
-      <Navbar />
+      <h1>SkillMate</h1>
 
-      <h1>Welcome to SkillMate</h1>
+      <p>Exchange skills and learn from others.</p>
 
-      <p>Exchange skills and learn together.</p>
+      <Link to="/login">
+        <button>Login</button>
+      </Link>
+
+      <Link to="/register">
+        <button>Register</button>
+      </Link>
     </div>
   );
 }

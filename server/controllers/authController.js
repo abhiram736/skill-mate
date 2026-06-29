@@ -44,9 +44,11 @@ exports.loginUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-    if (!name || !email || !password) {
-  return res.status(400).json({ message: "All fields are required",});
-  }
+ if (!email || !password) {
+  return res.status(400).json({
+    message: "Email and Password are required",
+  });
+}
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid Credentials" });

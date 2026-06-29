@@ -6,7 +6,10 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Requests from "./pages/Requests";
+<<<<<<< HEAD
 import "./App.css";
+=======
+>>>>>>> 332d848 (Frontend and request feature updates)
 
 import ProtectedRoute from "./components/ProtectedRoute";
 

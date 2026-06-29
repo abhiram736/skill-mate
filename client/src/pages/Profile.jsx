@@ -1,26 +1,59 @@
-import Navbar from "../components/Navbar";
+import { useState } from "react";
+import API from "../services/api";
 
 function Profile() {
+  const [name, setName] = useState("");
+  const [skillsOffered, setSkillsOffered] = useState("");
+  const [skillsWanted, setSkillsWanted] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await API.put("/users/profile", {
+        name,
+        skillsOffered: skillsOffered
+          .split(",")
+          .map((skill) => skill.trim()),
+        skillsWanted: skillsWanted
+          .split(",")
+          .map((skill) => skill.trim()),
+      });
+
+      alert("Profile Updated");
+    } catch (err) {
+      alert("Update Failed");
+    }
+  };
+
   return (
-    <>
-      <Navbar />
+    <div>
+      <h2>Profile</h2>
 
-      <div style={{ padding: "30px" }}>
-        <h1>Profile</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
-        <p>Name: Hari</p>
+        <input
+          placeholder="Skills Offered (comma separated)"
+          value={skillsOffered}
+          onChange={(e) => setSkillsOffered(e.target.value)}
+        />
 
-        <p>
-          Skills Offered:
-          Java, React
-        </p>
+        <input
+          placeholder="Skills Wanted (comma separated)"
+          value={skillsWanted}
+          onChange={(e) => setSkillsWanted(e.target.value)}
+        />
 
-        <p>
-          Skills Wanted:
-          Python, NodeJS
-        </p>
-      </div>
-    </>
+        <button type="submit">
+          Update Profile
+        </button>
+      </form>
+    </div>
   );
 }
 

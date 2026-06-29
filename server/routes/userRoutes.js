@@ -11,8 +11,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 router.get("/", getUsers);
 
-router.get("/:id", getUserById);
-
 router.put("/profile", authMiddleware, updateProfile);
+router.get("/:id", getUserById);
 
 module.exports = router;

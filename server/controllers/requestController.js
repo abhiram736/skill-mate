@@ -1,81 +1,131 @@
 const Request = require("../models/Request");
 
-// Send a skill exchange request
+// Send Request
 exports.sendRequest = async (req, res) => {
   try {
-    const { receiverId, skillOffered, skillRequested } = req.body;
+    const { sender, receiver, skillOffered, skillRequested } = req.body;
 
-    if (req.user.id === receiverId) {
-      return res
-        .status(400)
-        .json({ message: "You cannot send a request to yourself" });
+if (
+  !sender ||
+  !receiver ||
+  !skillOffered ||
+  !skillRequested
+) {
+  return res.status(400).json({
+    message: "All fields are required",
+  });
+}
+
+    if (sender === receiver) {
+      return res.status(400).json({
+        message: "You cannot send a request to yourself",
+      });
+    }
+
+    const existingRequest = await Request.findOne({
+      sender,
+      receiver,
+      status: "Pending",
+    });
+
+    if (existingRequest) {
+      return res.status(400).json({
+        message: "Request already sent",
+      });
     }
 
     const request = await Request.create({
-      sender: req.user.id,
-      receiver: receiverId,
-      skillOffered,
-      skillRequested,
+  sender,
+  receiver,
+  skillOffered,
+  skillRequested,
+});
+
+    res.status(201).json({
+      success: true,
+      message: "Request Sent Successfully",
+      request,
     });
-
-    res.status(201).json({ message: "Request sent successfully", request });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-// Get all requests received by the logged-in user
-exports.getReceivedRequests = async (req, res) => {
+// Get All Requests
+exports.getRequests = async (req, res) => {
   try {
-    const requests = await Request.find({ receiver: req.user.id }).populate(
-      "sender",
-      "name email skillsOffered"
-    );
+    const requests = await Request.find()
+      .populate("sender", "name email")
+      .populate("receiver", "name email");
 
-    res.status(200).json(requests);
+    res.status(200).json({
+      success: true,
+      count: requests.length,
+      requests,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-// Get all requests sent by the logged-in user
-exports.getSentRequests = async (req, res) => {
+// Accept Request
+exports.acceptRequest = async (req, res) => {
   try {
-    const requests = await Request.find({ sender: req.user.id }).populate(
-      "receiver",
-      "name email skillsOffered"
-    );
-
-    res.status(200).json(requests);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// Accept or reject a request
-exports.updateRequestStatus = async (req, res) => {
-  try {
-    const { status } = req.body;
-
-    if (!["Accepted", "Rejected"].includes(status)) {
-      return res.status(400).json({ message: "Invalid status value" });
-    }
-
     const request = await Request.findById(req.params.id);
 
     if (!request) {
-      return res.status(404).json({ message: "Request not found" });
+      return res.status(404).json({
+        message: "Request not found",
+      });
     }
 
-    if (request.receiver.toString() !== req.user.id) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
+    request.status = "Accepted";
 
-    request.status = status;
     await request.save();
 
-    res.status(200).json({ message: `Request ${status}`, request });
+    res.status(200).json({
+      success: true,
+      message: "Request Accepted",
+      request,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Reject Request
+exports.rejectRequest = async (req, res) => {
+  try {
+    const request = await Request.findById(req.params.id);
+
+    if (!request) {
+      return res.status(404).json({
+        message: "Request not found",
+      });
+    }
+
+    request.status = "Rejected";
+
+    await request.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Request Rejected",
+      request,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
