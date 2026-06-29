@@ -1,64 +1,86 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import API from "../services/api";
+import Navbar from "../components/Navbar";
 
 function Register() {
-  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await API.post("/auth/register", formData);
-
-      alert("Registered Successfully");
-
-      navigate("/login");
-    } catch (err) {
-      alert(err.response?.data?.message || "Registration Failed");
-    }
+  const handleRegister = () => {
+    console.log("Name:", name);
+    console.log("Email:", email);
+    console.log("Password:", password);
   };
 
   return (
-    <div>
-      <h2>Register</h2>
+    <>
+      <Navbar />
 
-      <form onSubmit={handleSubmit}>
+      <div
+        style={{
+          width: "350px",
+          margin: "50px auto",
+          padding: "30px",
+          border: "1px solid gray",
+          borderRadius: "10px",
+          backgroundColor: "#242424",
+        }}
+      >
+        <h1 style={{ textAlign: "center" }}>
+          Register
+        </h1>
+
         <input
-          name="name"
-          placeholder="Name"
-          onChange={handleChange}
+          type="text"
+          placeholder="Enter Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+            boxSizing: "border-box",
+          }}
         />
 
         <input
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
+          type="email"
+          placeholder="Enter Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+            boxSizing: "border-box",
+          }}
         />
 
         <input
           type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
+          placeholder="Enter Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "20px",
+            boxSizing: "border-box",
+          }}
         />
 
-        <button type="submit">Register</button>
-      </form>
-    </div>
+        <button
+          onClick={handleRegister}
+          style={{
+            width: "100%",
+            padding: "10px",
+            cursor: "pointer",
+          }}
+        >
+          Register
+        </button>
+      </div>
+    </>
   );
 }
 

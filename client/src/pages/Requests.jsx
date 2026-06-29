@@ -1,77 +1,32 @@
-import { useEffect, useState } from "react";
-import API from "../services/api";
+import Navbar from "../components/Navbar";
 
 function Requests() {
-  const [requests, setRequests] = useState([]);
-
-  useEffect(() => {
-    loadRequests();
-  }, []);
-
-  const loadRequests = async () => {
-    try {
-      const res = await API.get("/requests");
-      setRequests(res.data.requests);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const acceptRequest = async (id) => {
-    await API.put(`/requests/${id}/accept`);
-    loadRequests();
-  };
-
-  const rejectRequest = async (id) => {
-    await API.put(`/requests/${id}/reject`);
-    loadRequests();
-  };
-
   return (
-    <div>
-      <h2>Skill Requests</h2>
+    <>
+      <Navbar />
 
-      {requests.map((request) => (
+      <div style={{ padding: "30px" }}>
+        <h1>Requests</h1>
+
         <div
-          key={request._id}
           style={{
-            border: "1px solid #ccc",
-            padding: "10px",
-            margin: "10px",
+            border: "1px solid gray",
+            padding: "20px",
+            marginTop: "20px",
           }}
         >
-          <p>Sender: {request.sender?.name}</p>
+          <p>Hari wants to learn React.</p>
 
-          <p>Receiver: {request.receiver?.name}</p>
+          <button>Accept</button>
 
-          <p>Status: {request.status}</p>
-
-          <p>Skill Offered: {request.skillOffered}</p>
-
-          <p>Skill Requested: {request.skillRequested}</p>
-
-          {request.status === "Pending" && (
-            <>
-              <button
-                onClick={() =>
-                  acceptRequest(request._id)
-                }
-              >
-                Accept
-              </button>
-
-              <button
-                onClick={() =>
-                  rejectRequest(request._id)
-                }
-              >
-                Reject
-              </button>
-            </>
-          )}
+          <button
+            style={{ marginLeft: "10px" }}
+          >
+            Reject
+          </button>
         </div>
-      ))}
-    </div>
+      </div>
+    </>
   );
 }
 

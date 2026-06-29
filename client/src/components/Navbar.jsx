@@ -1,21 +1,39 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Navbar() {
-  const navigate = useNavigate();
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
-    navigate("/login");
-  };
-
   return (
-    <nav>
-      <Link to="/dashboard">Dashboard</Link>{" "}
-      <Link to="/profile">Profile</Link>{" "}
-      <Link to="/requests">Requests</Link>{" "}
-      <button onClick={logout}>Logout</button>
+    <nav
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "20px",
+        backgroundColor: "#242424",
+      }}
+    >
+      <h2>SkillMate </h2>
+
+      <div>
+        <Link
+          to="/"
+          style={{ marginRight: "20px", textDecoration: "none" }}
+        >
+          Home
+        </Link>
+
+        <Link
+          to="/login"
+          style={{ marginRight: "20px", textDecoration: "none" }}
+        >
+          Login
+        </Link>
+
+        <Link
+          to="/register"
+          style={{ textDecoration: "none" }}
+        >
+          Register
+        </Link>
+      </div>
     </nav>
   );
 }

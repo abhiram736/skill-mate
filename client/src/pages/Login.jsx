@@ -1,59 +1,69 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import API from "../services/api";
+import Navbar from "../components/Navbar";
 
 function Login() {
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const res = await API.post("/auth/login", formData);
-
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-
-      navigate("/dashboard");
-    } catch (err) {
-      alert(err.response?.data?.message || "Login Failed");
-    }
+  const handleLogin = () => {
+    console.log("Email:", email);
+    console.log("Password:", password);
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <>
+      <Navbar />
 
-      <form onSubmit={handleSubmit}>
+      <div
+        style={{
+          width: "350px",
+          margin: "50px auto",
+          padding: "30px",
+          border: "1px solid gray",
+          borderRadius: "10px",
+          backgroundColor: "#242424",
+        }}
+      >
+        <h1 style={{ textAlign: "center" }}>Login</h1>
+
         <input
           type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
+          placeholder="Enter Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+            boxSizing: "border-box",
+          }}
         />
 
         <input
           type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
+          placeholder="Enter Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "20px",
+            boxSizing: "border-box",
+          }}
         />
 
-        <button type="submit">Login</button>
-      </form>
-    </div>
+        <button
+          onClick={handleLogin}
+          style={{
+            width: "100%",
+            padding: "10px",
+            cursor: "pointer",
+          }}
+        >
+          Login
+        </button>
+      </div>
+    </>
   );
 }
 
