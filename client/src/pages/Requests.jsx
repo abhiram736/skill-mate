@@ -1,33 +1,14 @@
-import Navbar from "../components/Navbar";
+import { useEffect } from "react";
 
-function Requests() {
+export default function Requests() {
+  useEffect(() => {
+    console.log("Requests page loaded");
+  }, []);
+
   return (
-    <>
-      <Navbar />
-
-      <div style={{ padding: "30px" }}>
-        <h1>Requests</h1>
-
-        <div
-          style={{
-            border: "1px solid gray",
-            padding: "20px",
-            marginTop: "20px",
-          }}
-        >
-          <p>Hari wants to learn React.</p>
-
-          <button>Accept</button>
-
-          <button
-            style={{ marginLeft: "10px" }}
-          >
-            Reject
-          </button>
-        </div>
-      </div>
-    </>
+    <div>
+      <h1>Requests</h1>
+      <p>Skill exchange requests will appear here (Member 3 API)</p>
+    </div>
   );
 }
-
-export default Requests;

@@ -12,7 +12,7 @@ function Dashboard() {
         <p>Java, React</p>
 
         <h3>Skills Wanted</h3>
-        <p>Python, NodeJS</p>
+        <p>Python, NodeJS</p> 
 
         <h3>Pending Requests</h3>
         <p>2</p>

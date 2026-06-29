@@ -1,70 +1,50 @@
-import { useState } from "react";
-import Navbar from "../components/Navbar";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../services/authService";
+import { setToken } from "../utils/token";
 
-function Login() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("Login page loaded");
+  }, []);
+
+  const handleLogin = async () => {
+    try {
+      const res = await loginUser({ email, password });
+
+      setToken(res.data.token);
+
+      alert("Login successful");
+      navigate("/dashboard");
+    } catch (err) {
+      console.log(err);
+      alert("Login failed");
+    }
   };
 
   return (
-    <>
-      <Navbar />
+    <div>
+      <h1>Login</h1>
 
-      <div
-        style={{
-          width: "350px",
-          margin: "50px auto",
-          padding: "30px",
-          border: "1px solid gray",
-          borderRadius: "10px",
-          backgroundColor: "#242424",
-        }}
-      >
-        <h1 style={{ textAlign: "center" }}>Login</h1>
+      <input
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-        <input
-          type="email"
-          placeholder="Enter Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "15px",
-            boxSizing: "border-box",
-          }}
-        />
+      <input
+        placeholder="Password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-        <input
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "20px",
-            boxSizing: "border-box",
-          }}
-        />
-
-        <button
-          onClick={handleLogin}
-          style={{
-            width: "100%",
-            padding: "10px",
-            cursor: "pointer",
-          }}
-        >
-          Login
-        </button>
-      </div>
-    </>
+      <button onClick={handleLogin}>Login</button>
+    </div>
   );
 }
-
-export default Login;
