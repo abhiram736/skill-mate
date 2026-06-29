@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-import { useEffect } from "react";
-
-export default function Requests() {
-  useEffect(() => {
-    console.log("Requests page loaded");
-  }, []);
-
-  return (
-    <div>
-      <h1>Requests</h1>
-      <p>Skill exchange requests will appear here (Member 3 API)</p>
-=======
 import { useEffect, useState } from "react";
 import API from "../services/api";
 
@@ -53,30 +40,15 @@ function Requests() {
             margin: "10px",
           }}
         >
-          <p>
-            Sender:
-            {request.sender?.name}
-          </p>
+          <p>Sender: {request.sender?.name}</p>
 
-          <p>
-            Receiver:
-            {request.receiver?.name}
-          </p>
+          <p>Receiver: {request.receiver?.name}</p>
 
-          <p>
-            Status:
-            {request.status}
-          </p>
+          <p>Status: {request.status}</p>
 
-          <p>
-            Skill Offered:
-            {request.skillOffered}
-          </p>
+          <p>Skill Offered: {request.skillOffered}</p>
 
-          <p>
-            Skill Requested:
-            {request.skillRequested}
-          </p>
+          <p>Skill Requested: {request.skillRequested}</p>
 
           {request.status === "Pending" && (
             <>
@@ -99,7 +71,8 @@ function Requests() {
           )}
         </div>
       ))}
->>>>>>> 332d848 (Frontend and request feature updates)
     </div>
   );
 }
+
+export default Requests;
