@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Requests from "./pages/Requests";
+import "./App.css";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
